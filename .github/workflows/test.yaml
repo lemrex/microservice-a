@@ -72,16 +72,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          # Update local repo
-          git fetch origin
-          git rebase origin/main
-          
-          # Commit changes
+          # First commit any manifest changes
           git add manifest/
-          git commit -m "Update image tags to ${{ github.sha }}" || echo "No changes to commit"
+          if git diff-index --quiet HEAD --; then
+            echo "No changes to commit in manifest/"
+          else
+            git commit -m "Update image tags to ${{ github.sha }}"
+          fi
           
-          # Push changes
+          # Then sync with remote
+          git fetch origin
           git pull --rebase origin main
+          
+          # Finally push changes
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
