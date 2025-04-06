@@ -53,7 +53,7 @@ jobs:
         run: |
           # sed -i "s@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:[a-z0-9]*@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" ${{ matrix.service }}/deployment.yaml
           sed -i "s@docker-server/docker-org/${{ matrix.service }}-api:[a-zA-Z0-9.-]*@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" manifest/${{ matrix.service }}.yaml
-          cat manifest/ip.yaml
+          cat manifest/${{ matrix.service }}.yaml
 
       # - name: Verify cluster access
       #   run: |
