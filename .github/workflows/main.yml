@@ -53,17 +53,18 @@ jobs:
         run: |
           # sed -i "s@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:[a-z0-9]*@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" ${{ matrix.service }}/deployment.yaml
           sed -i "s@docker-server*/docker-org*/${{ matrix.service }}-api:[a-zA-Z0-9.-]*@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" manifest/${{ matrix.service }}.yaml
+          cat manifest/ip.yaml
 
-      - name: Verify cluster access
-        run: |
-          kubectl version --client
-          kubectl cluster-info
-          kubectl get nodes
+      # - name: Verify cluster access
+      #   run: |
+      #     kubectl version --client
+      #     kubectl cluster-info
+      #     kubectl get nodes
 
-      - name: Apply Kubernetes manifests for ${{ matrix.service }}
-        run: |
-          kubectl apply -f manifest/
+      # - name: Apply Kubernetes manifests for ${{ matrix.service }}
+      #   run: |
+      #     kubectl apply -f manifest/
 
-      - name: Verify deployment
-        run: |
-          kubectl get pods -l app=${{ matrix.service }} -w
+      # - name: Verify deployment
+      #   run: |
+      #     kubectl get pods -l app=${{ matrix.service }} -w
