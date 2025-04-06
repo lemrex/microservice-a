@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: docker-server/docker-org/frontend-api:image-version
+        image: swr.af-south-1.myhuaweicloud.com/ralf/frontend:fc566c52ad2d6fcb2b954aef53dca4e4f83a4813
         ports:
         - containerPort: 80
         resources:

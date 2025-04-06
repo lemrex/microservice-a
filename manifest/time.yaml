@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: time
-        image: docker-server/docker-org/time-api:image-version
+        image: swr.af-south-1.myhuaweicloud.com/ralf/time:fc566c52ad2d6fcb2b954aef53dca4e4f83a4813
         ports:
         - containerPort: 3000
         resources:
