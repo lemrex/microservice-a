@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: date
-        image: swr.af-south-1.myhuaweicloud.com/ralf/date:e445eaec35d71274a0670a206447dd735e86d3f8
+        image: swr.af-south-1.myhuaweicloud.com/ralf/date:928a1e9bf7b73136fc8a0dd2c7855f32348ed132
         ports:
         - containerPort: 3000
         resources:
