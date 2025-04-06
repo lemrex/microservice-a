@@ -78,3 +78,12 @@ jobs:
           git add manifest/
           git commit -m "Update image tags to ${{ github.sha }}"
           git push
+
+      - name: Commit and push updated manifests
+        run: |
+          git config user.name "lemrex"
+          git config user.email "emekaralf@gmail.com"
+          git add manifest/
+          git commit -m "Update image tags to ${{ github.sha }}"
+          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/lemrex/microservice-a.git HEAD:main
+
