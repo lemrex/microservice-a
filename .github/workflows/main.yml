@@ -32,33 +32,36 @@ jobs:
           docker build -t ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }} .
           docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}
 
-  patch-manifests:
-    runs-on: ubuntu-latest
-    needs: build
-    strategy:
-      matrix:
-        service: ['date', 'frontend', 'ip', 'latency', 'random', 'time', 'uuid']
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Patch image in manifest
-        run: |
-          sed -i "s@docker-server/docker-org/${{ matrix.service }}-api:image-version@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" manifest/${{ matrix.service }}.yaml
-
   deploy:
     runs-on: ubuntu-latest
-    needs: patch-manifests
+    needs: build
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Configure kubectl for Kubernetes Cluster
+      - name: Configure kubectl for kubernetes Cluster
         run: |
           mkdir -p $HOME/.kube
           export KUBECONFIG=$HOME/.kube/config
           echo "${{ secrets.KUBE_CONFIG_DATA }}" > $KUBECONFIG
           chmod 600 $KUBECONFIG
+
+      - name: Update deployment image for services
+        run: |
+          # sed -i "s@docker-server/docker-org/date-api:image-version@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" manifest/${{ matrix.service }}.yaml
+          # sed -i "s@docker-server/docker-org/frontend-api:image-version@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" manifest/${{ matrix.service }}.yaml
+          # sed -i "s@docker-server/docker-org/latency-api:image-version@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" manifest/${{ matrix.service }}.yaml
+          # sed -i "s@docker-server/docker-org/ip-api:image-version@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" manifest/${{ matrix.service }}.yaml
+          # sed -i "s@docker-server/docker-org/random-api:image-version@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" manifest/${{ matrix.service }}.yaml
+          # sed -i "s@docker-server/docker-org/time-api:image-version@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" manifest/${{ matrix.service }}.yaml
+          # sed -i "s@docker-server/docker-org/uuid-api:image-version@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" manifest/${{ matrix.service }}.yaml
+
+          for service in date frontend ip latency random time uuid; do
+          sed -i "s@docker-server/docker-org/${service}-api:image-version@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/$service:${{ github.sha }}@g" manifest/$service.yaml
+          echo "Updated manifest/$service.yaml:"
+          cat manifest/$service.yaml
+          done
+
 
       - name: Verify cluster access
         run: |
@@ -66,7 +69,6 @@ jobs:
           kubectl cluster-info
           kubectl get nodes
 
-      - name: Apply all manifests once
+      - name: Apply Kubernetes manifests for ${{ matrix.service }}
         run: |
-          cat manifest/ip.yaml
           kubectl apply -f manifest/
