@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: docker-server/docker-org/frontend:image-version
+        image: docker-server/docker-org/frontend-api:image-version
         ports:
         - containerPort: 80
         resources:
