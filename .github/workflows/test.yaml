@@ -53,10 +53,12 @@ jobs:
       - name: Update deployment image for services
         run: |
           for service in date frontend ip latency random time uuid; do
-            sed -i "s@docker-server/docker-org/${service}-api:image-version@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/$service:${{ github.sha }}@g" manifest/$service.yaml
+            sed -i "s@swr.af-south-1.myhuaweicloud.com/ralf/${service}:[a-z0-9]*@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/$service:${{ github.sha }}@g" manifest/$service.yaml
             echo "Updated manifest/$service.yaml:"
             cat manifest/$service.yaml
           done
+
+      
 
       - name: Verify cluster access
         run: |
