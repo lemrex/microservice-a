@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: date
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: date
+  template:
+    metadata:
+      labels:
+        app: date
+    spec:
+      containers:
+      - name: date
+        image: docker-server/docker-org/date-api:image-version
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+          limits:
+            cpu: "200m"
+            memory: "200Mi"
+      imagePullSecrets:
+      - name: default-secret            
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: date
+spec:
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: date
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: date
+  # annotations:
+  #   cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx  
+  # tls:
+  # - hosts:
+  #   - date.tf.work.gd
+  #   secretName: date-tls
+  rules:
+  - host: date.tf.work.gd
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: date
+            port:
+              number: 80

@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uuid
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uuid
+  template:
+    metadata:
+      labels:
+        app: uuid
+    spec:
+      containers:
+      - name: uuid
+        image: docker-server/docker-org/uuid-api:image-version
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "200Mi"
+      imagePullSecrets:
+      - name: default-secret            
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uuid
+spec:
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: uuid
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: uuid
+  # annotations:
+  #   cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx  
+  # tls:
+  # - hosts:
+  #   - uuid.tf.work.gd
+  #   secretName: uuid-tls
+  rules:
+  - host: uuid.tf.work.gd
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: uuid
+            port:
+              number: 80
+

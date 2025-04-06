@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: time
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: time
+  template:
+    metadata:
+      labels:
+        app: time
+    spec:
+      containers:
+      - name: time
+        image: docker-server/docker-org/time-api:image-version
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "200Mi"
+      imagePullSecrets:
+      - name: default-secret
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: time
+spec:
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: time
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: time
+  # annotations:
+  #   cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx  
+  # tls:
+  # - hosts:
+  #   - time.tf.work.gd
+  #   secretName: time-tls
+  rules:
+  - host: time.tf.work.gd
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: time
+            port:
+              number: 80
+

@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: latency
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: latency
+  template:
+    metadata:
+      labels:
+        app: latency
+    spec:
+      containers:
+      - name: latency
+        image: docker-server/docker-org/latency-api:image-version
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+          limits:
+            cpu: "200m"
+            memory: "200Mi"
+      imagePullSecrets:
+      - name: default-secret            
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: latency
+spec:
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: latency
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: latency
+  # annotations:
+  #   cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx  
+  # tls:
+  # - hosts:
+  #   - latency.tf.work.gd
+  #   secretName: latency-tls
+  rules:
+  - host: latency.tf.work.gd
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: latency
+            port:
+              number: 80
+

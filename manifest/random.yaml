@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: random
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: random
+  template:
+    metadata:
+      labels:
+        app: random
+    spec:
+      containers:
+      - name: random
+        image: swr.af-south-1.myhuaweicloud.com/ralf/random-api:20250309.7
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "200Mi"
+      imagePullSecrets:
+      - name: default-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: random
+spec:
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: random
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: random
+spec:
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: random
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: random
+  # annotations:
+  #   cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx  
+  # tls:
+  # - hosts:
+  #   - random.tf.work.gd
+  #   secretName: random-tls
+  rules:
+  - host: random.tf.work.gd
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: random
+            port:
+              number: 80
+
