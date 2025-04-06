@@ -68,4 +68,5 @@ jobs:
 
       - name: Apply all manifests once
         run: |
+          cat manifest/ip.yaml
           kubectl apply -f manifest/
