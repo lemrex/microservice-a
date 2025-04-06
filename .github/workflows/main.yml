@@ -44,7 +44,7 @@ jobs:
 
       - name: Patch image in manifest
         run: |
-          sed -i "s@docker-server/docker-org/${{ matrix.service }}-api:[a-zA-Z0-9.-]*@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" manifest/${{ matrix.service }}.yaml
+          sed -i "s@docker-server/docker-org/${{ matrix.service }}-api:image-version@${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ matrix.service }}:${{ github.sha }}@g" manifest/${{ matrix.service }}.yaml
 
   deploy:
     runs-on: ubuntu-latest
