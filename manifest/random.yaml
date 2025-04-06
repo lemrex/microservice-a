@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: random
-        image: swr.af-south-1.myhuaweicloud.com/ralf/random:20250309
+        image: swr.af-south-1.myhuaweicloud.com/ralf/random:74c5c30f23af88dedaa7225c64dd6e83a52e8c0e
         ports:
         - containerPort: 3000
         resources:

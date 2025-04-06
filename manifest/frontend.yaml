@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: swr.af-south-1.myhuaweicloud.com/ralf/frontend:928a1e9bf7b73136fc8a0dd2c7855f32348ed132
+        image: swr.af-south-1.myhuaweicloud.com/ralf/frontend:74c5c30f23af88dedaa7225c64dd6e83a52e8c0e
         ports:
         - containerPort: 80
         resources:
