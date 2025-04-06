@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: ip
-        image: swr.af-south-1.myhuaweicloud.com/ralf/ip:792e07d356989aa22997dc1049454e3b7800e165
+        image: swr.af-south-1.myhuaweicloud.com/ralf/ip:e445eaec35d71274a0670a206447dd735e86d3f8
         ports:
         - containerPort: 3000
         resources:
