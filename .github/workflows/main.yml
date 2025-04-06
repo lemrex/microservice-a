@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: ['date', 'frontend', 'ip', 'latency', 'manifest', 'random', 'time', 'uuid']
+        service: ['date', 'frontend', 'ip', 'latency', 'random', 'time', 'uuid']
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
